@@ -1,0 +1,11 @@
+@import './style.css';
+
+.n-space,
+.n-layout,
+.space {
+  height: 100%;
+  width: 100%;
+}
+.n-space {
+  padding: 15px;
+}
