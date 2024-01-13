@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical item-class="space">
+  <n-flex vertical item-class="space">
     <n-layout>
       <n-layout-header>
         <HomeHeader />
@@ -16,7 +16,7 @@
         <HomeFooter />
       </n-layout-footer>
     </n-layout>
-  </n-space>
+  </n-flex>
 </template>
 
 <script setup lang="ts">
@@ -24,7 +24,7 @@ import HomeHeader from '@/components/HomeHeader.vue'
 import HomeSlider from '@/components/HomeSider.vue'
 import HomeFooter from '@/components/HomeFooter.vue'
 import {
-  NSpace,
+  NFlex,
   NLayout,
   NLayoutHeader,
   NLayoutSider,
@@ -45,12 +45,13 @@ import {
 }
 .n-layout-header {
   align-items: center;
+  padding: 10px;
 }
 .center {
   height: 100vh;
 }
 .n-layout-footer {
-  height: 70px;
+  height: 80px;
   padding: 0;
   background-color: #ffffff;
   bottom: 0;

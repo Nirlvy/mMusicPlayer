@@ -1,13 +1,25 @@
 use futures_util::{SinkExt, StreamExt};
+use lazy_static::lazy_static;
 use log::*;
-use std::{net::SocketAddr, time::Duration};
-use tokio::net::{TcpListener, TcpStream};
+use std::{
+    net::SocketAddr,
+    sync::{Arc, Mutex},
+    time::Duration,
+};
+use tokio::{
+    net::{TcpListener, TcpStream},
+    task::JoinHandle,
+};
 use tokio_tungstenite::{
     accept_async,
     tungstenite::{Error, Message, Result},
 };
 
 use crate::mpd_fn;
+
+lazy_static! {
+    static ref THREAD: Arc<Mutex<Option<JoinHandle<()>>>> = Arc::new(Mutex::new(None));
+}
 
 async fn accept_connection(peer: SocketAddr, stream: TcpStream) {
     if let Err(e) = handle_connection(peer, stream).await {
@@ -29,6 +41,7 @@ async fn handle_connection(peer: SocketAddr, stream: TcpStream) -> Result<()> {
     loop {
         tokio::select! {
             msg = ws_receiver.next() => {
+                debug!("message:{:?}",msg);
                 match msg {
                     Some(msg) => {
                         let msg = msg?;
@@ -44,7 +57,8 @@ async fn handle_connection(peer: SocketAddr, stream: TcpStream) -> Result<()> {
             _ = interval.tick() => {
                 let status=mpd_fn::get_status();
                match  status{
-                    Ok(status)=>ws_sender.send(Message::Text(status)).await?,
+                    Ok(status)=>{
+                        ws_sender.send(Message::Text(status)).await?},
                     Err(e)=>ws_sender.send(Message::Text(e)).await?
                }
             }
@@ -65,6 +79,15 @@ pub async fn init() {
             .expect("connected streams should have a peer address");
         info!("Peer address: {}", peer);
 
-        tokio::spawn(accept_connection(peer, stream));
+        let mut thread = THREAD.lock().unwrap();
+        match *thread {
+            Some(_) => {
+                let old_thread = thread.take().unwrap();
+                old_thread.abort();
+            }
+            None => {}
+        }
+        let new_thread = tokio::spawn(accept_connection(peer, stream));
+        *thread = Some(new_thread);
     }
 }

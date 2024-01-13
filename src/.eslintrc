@@ -12,6 +12,7 @@
       }
     }
   },
+  "exclude": ["types"],
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "parser": "@typescript-eslint/parser",
@@ -26,15 +27,12 @@
     "plugin:vue/vue3-essential",
     "plugin:vue/vue3-recommended",
     "plugin:prettier/recommended",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "eslint:recommended"
   ],
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
     "vue/multi-word-component-names": 0,
-    "no-undef": 0
-    //   "@typescript-eslint/no-explicit-any": 0
-    //   "@typescript-eslint/no-empty-function": 1,
-    //   "no-console": 1
+    "no-undef": 0,
+    "no-unused-vars": 1
   }
 }

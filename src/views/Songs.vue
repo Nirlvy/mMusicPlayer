@@ -1,11 +1,11 @@
 <template>
-  <n-data-table
+  <!-- <n-data-table
     :columns="columns"
     :data="data"
     :max-height="250"
     :scroll-x="1800"
     virtual-scroll
-  />
+  /> -->
 </template>
 
 <script setup lang="ts">
@@ -68,12 +68,12 @@ const columns: DataTableColumns<RowData> = [
   },
 ]
 
-const data = reactive({
-  key: 1,
-  name: 'string',
-  age: 1,
-  address: 'string',
-}) as RowData[]
+// const data = reactive({
+//   key: 1,
+//   name: 'string',
+//   age: 1,
+//   address: 'string',
+// }) as RowData[]
 </script>
 
 <style scoped></style>
